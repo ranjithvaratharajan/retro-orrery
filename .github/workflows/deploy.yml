@@ -28,9 +28,11 @@ jobs:
       - name: Build Application
         run: npm run build
 
-      - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@v4
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
-          folder: dist/retro-orrery/browser
-          branch: gh-pages
-          clean: true
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist/retro-orrery/browser/
+          server-dir: /
