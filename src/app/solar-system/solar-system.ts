@@ -67,240 +67,7 @@ import { CelestialMathService, OrbitalElements } from '../services/celestial-mat
     
     <canvas #canvas></canvas>
   `,
-  styles: [`
-    :host {
-      display: block;
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
-      position: relative;
-      font-family: 'Courier New', Courier, monospace; /* Fallback retro font */
-      color: #0f0; /* Classic Terminal Green */
-    }
-    
-    canvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-
-    /* Retro UI Styling */
-    .ui-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-        padding: 20px;
-        box-sizing: border-box;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
-
-    /* Glass/Retro Box Style */
-    .retro-box {
-        background: rgba(0, 20, 0, 0.7);
-        border: 2px solid #0f0;
-        padding: 10px;
-        box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
-        pointer-events: auto;
-        backdrop-filter: blur(2px);
-    }
-
-    /* Header */
-    .header-panel {
-        align-self: flex-start;
-        min-width: 300px;
-    }
-    .title {
-        margin: 0;
-        font-size: 1.5rem;
-        letter-spacing: 2px;
-        text-shadow: 2px 2px #000;
-    }
-    .blink {
-        animation: blink 1s step-end infinite;
-    }
-    @keyframes blink { 50% { opacity: 0; } }
-    
-    .date-display {
-        margin-top: 5px;
-        font-weight: bold;
-        color: #fff;
-    }
-    .scale-mode-display {
-        background: #003300;
-        color: #0f0;
-        padding: 2px 5px;
-        margin-top: 5px;
-        font-size: 0.8rem;
-    }
-    .scale-mode-display.warning {
-        color: #ffaa00;
-        border-color: #ffaa00;
-    }
-
-    /* Planet List - Sidebar */
-    .planet-list {
-        position: absolute;
-        right: 20px;
-        top: 20px;
-        width: 160px;
-    }
-    .list-header {
-        border-bottom: 1px solid #0f0;
-        margin-bottom: 5px;
-        font-weight: bold;
-        text-align: center;
-    }
-    ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-    li {
-        padding: 5px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        transition: background 0.2s;
-    }
-    li:hover {
-        background: rgba(0, 255, 0, 0.2);
-    }
-    li.active {
-        background: #0f0;
-        color: #000;
-        font-weight: bold;
-    }
-    .planet-icon {
-        width: 8px;
-        height: 8px;
-        display: inline-block;
-        border-radius: 50%;
-    }
-    .reset-btn {
-        width: 100%;
-        margin-top: 10px;
-        background: transparent;
-        border: 1px solid #0f0;
-        color: #0f0;
-        padding: 5px;
-        cursor: pointer;
-        font-family: inherit;
-    }
-    .reset-btn:hover {
-        background: #0f0;
-        color: #000;
-    }
-
-    /* Bottom Controls */
-    .controls {
-        position: absolute;
-        bottom: 20px;
-        right: 20px;
-    }
-    .button-group {
-        display: flex;
-        gap: 5px;
-    }
-    button {
-        background: black;
-        border: 1px solid #0f0;
-        color: #0f0;
-        padding: 5px 10px;
-        cursor: pointer;
-        font-family: inherit;
-        text-transform: uppercase;
-    }
-    button.active {
-        background: #0f0;
-        color: black;
-    }
-
-    /* Scale Indicator */
-    .scale-indicator {
-        position: absolute;
-        top: 140px;
-        left: 20px;
-        min-width: 200px;
-    }
-    .scale-line {
-        height: 2px;
-        width: 100px; /* Reference width: 100px */
-        background: #0f0;
-        margin-bottom: 5px;
-        position: relative;
-    }
-    .scale-line::before, .scale-line::after {
-        content: '';
-        position: absolute;
-        top: -4px;
-        width: 2px;
-        height: 10px;
-        background: #0f0;
-    }
-    .scale-line::after { right: 0; }
-    
-    .scale-line::after { right: 0; }
-    
-    .effects-toggle {
-        margin-top: 10px;
-        padding-top: 5px;
-        border-top: 1px solid #003300;
-        text-align: right;
-    }
-    .effects-toggle label {
-        cursor: pointer;
-        font-size: 0.8rem;
-        display: block;
-        margin-bottom: 5px;
-    }
-
-    /* Error Overlay */
-    .error-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.9);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-    }
-    .error-box {
-        border-color: #ff0000;
-        color: #ff0000;
-        box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
-        max-width: 500px;
-        text-align: center;
-    }
-    .blink-red {
-        animation: blink-red 1s step-end infinite;
-        color: #ff0000;
-        margin: 0;
-    }
-    @keyframes blink-red { 50% { opacity: 0.5; } }
-    
-    .divider {
-        height: 1px;
-        background: #ff0000;
-        margin: 10px 0;
-    }
-    .detail {
-        font-size: 1.2rem;
-        margin: 20px 0;
-    }
-    .suggestion {
-        font-size: 0.9rem;
-        opacity: 0.8;
-    }
-  `]
+  styleUrl: './solar-system.css'
 })
 export class SolarSystem implements OnInit, OnDestroy {
   @ViewChild('canvas', { static: true }) private canvasRef!: ElementRef<HTMLCanvasElement>;
@@ -335,6 +102,8 @@ export class SolarSystem implements OnInit, OnDestroy {
   private targetLookAt = new THREE.Vector3(0, 0, 0);
   private currentLookAt = new THREE.Vector3(0, 0, 0);
 
+  private readonly AU_SCALE = 25; // 1 AU = 25 Units. (Mercury 0.39 AU * 25 = 9.75 units. Sun Radius = 2).
+
   ngOnInit(): void {
     this.planetList = this.celestials.getPlanets();
     this.initThree();
@@ -368,7 +137,7 @@ export class SolarSystem implements OnInit, OnDestroy {
       this.scene = new THREE.Scene();
       this.scene.background = new THREE.Color(0x020205); // Very dark void
 
-      this.camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 2000);
+      this.camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 5000); // Increased far plane for larger scale
       this.camera.position.copy(this.targetCameraPos);
       this.camera.lookAt(this.targetLookAt);
 
@@ -618,7 +387,7 @@ export class SolarSystem implements OnInit, OnDestroy {
 
   private getVisualDistance(au: number): number {
     if (this.scaleMode === 'accurate') {
-      return au * 5; // 1 AU = 5 Units
+      return au * this.AU_SCALE;
     } else {
       // Logarithmic / Visual
       // Sun Radius is 2. Mercury Radius ~0.6. Total blocking is ~2.6.
@@ -632,7 +401,7 @@ export class SolarSystem implements OnInit, OnDestroy {
 
   private updateScaleIndicator(): void {
     // Logic: 100px line = How many km?
-    // 1 Unit = 1/5 AU.
+    // 1 Unit = 1/AU_SCALE AU.
     // 1 AU = 149,600,000 km.
     // Distance from camera to target?
 
@@ -648,8 +417,8 @@ export class SolarSystem implements OnInit, OnDestroy {
 
     const unitsPer100Px = 100 * (visibleHeightAtDist / canvasHeight);
 
-    // Convert Units to AU (1 AU = 5 Units)
-    const auPer100Px = unitsPer100Px / 5;
+    // Convert Units to AU
+    const auPer100Px = unitsPer100Px / this.AU_SCALE;
 
     let label = "";
     if (auPer100Px < 0.1) {
